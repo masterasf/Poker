@@ -2,7 +2,11 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
 <title>Royal Poker — Texas Hold'em</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -18,8 +22,19 @@
   --card-black: #1a1a2e;
   --bg-dark: #0a0a0f;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg-dark); font-family: 'Crimson Text', serif; overflow: hidden; height: 100vh; width: 100vw; user-select: none; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  background: var(--bg-dark);
+  font-family: 'Crimson Text', serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+  /* iOS safe areas */
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-top: env(safe-area-inset-top);
+  touch-action: manipulation;
+}
 #canvas-particles { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1000; }
 
 /* TABLE */
@@ -88,7 +103,7 @@ body { background: var(--bg-dark); font-family: 'Crimson Text', serif; overflow:
 /* ACTIONS */
 #action-area { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; z-index:30; width:420px; }
 #action-buttons { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
-.btn-action { padding:10px 20px; border-radius:8px; border:none; cursor:pointer; font-family:'Cinzel',serif; font-size:13px; font-weight:600; letter-spacing:1px; transition:all 0.2s; position:relative; overflow:hidden; }
+.btn-action { padding:10px 20px; border-radius:8px; border:none; cursor:pointer; font-family:'Cinzel',serif; font-size:13px; font-weight:600; letter-spacing:1px; transition:all 0.2s; position:relative; overflow:hidden; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
 .btn-action:hover { filter:brightness(1.15); transform:translateY(-2px); }
 .btn-action:active { transform:scale(0.96); }
 .btn-fold   { background:linear-gradient(135deg,#7f1d1d,#c0392b); color:white; box-shadow:0 4px 12px rgba(192,57,43,0.4); }
@@ -157,6 +172,177 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; h
 #info-bar { position:fixed; top:14px; left:50%; transform:translateX(-50%); display:flex; gap:20px; align-items:center; z-index:100; background:rgba(0,0,0,0.6); border:1px solid rgba(201,168,76,0.2); border-radius:30px; padding:6px 24px; backdrop-filter:blur(8px); }
 .info-item { font-family:'Cinzel',serif; font-size:11px; color:rgba(201,168,76,0.7); letter-spacing:1px; }
 .info-item span { color:white; font-size:12px; }
+
+/* ═══════════════════════════════════════
+   MOBILE — tablets & landscape phones
+   ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  #table-wrap { width:min(700px,97vw); height:min(460px,78vh); }
+
+  .card { width:48px; height:68px; font-size:15px; padding:3px 4px; border-radius:7px; }
+  .card .suit-center { font-size:20px; }
+  .card-back { width:48px; height:68px; }
+  .empty-slot { width:48px; height:68px; }
+
+  .player-avatar { width:44px; height:44px; font-size:20px; }
+  .player-info { min-width:80px; padding:3px 8px; }
+  .player-name { font-size:9px; }
+  .player-chips { font-size:12px; }
+
+  .player-spot.pos-top-left  { top:14px; left:55px; }
+  .player-spot.pos-top-right { top:14px; right:55px; }
+
+  .btn-action { padding:9px 14px; font-size:11px; }
+  #action-area { width:96vw; bottom:8px; }
+
+  #info-bar { gap:12px; padding:5px 16px; }
+  .info-item { font-size:10px; }
+}
+
+/* ═══════════════════════════════════════
+   MOBILE — phones portrait  ≤ 480px
+   ═══════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* Prevent any horizontal scroll */
+  body { overflow-x: hidden; }
+
+  /* ── TABLE ── */
+  #table-wrap {
+    width: 100vw;
+    height: 62vh;
+    margin-top: 38px;   /* space for info-bar */
+  }
+  #table {
+    inset: 28px;
+    box-shadow: 0 0 0 8px var(--wood), 0 0 0 13px var(--wood-light), 0 0 0 16px var(--wood), 0 0 30px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.4);
+  }
+  #table::after { font-size:8px; letter-spacing:3px; }
+
+  /* ── COMMUNITY ── */
+  #community-area { transform:translate(-50%,-55%); gap:5px; }
+  #community-cards { gap:4px; }
+  #pot-display { font-size:11px; padding:3px 12px; }
+  #phase-display { font-size:9px; letter-spacing:2px; }
+
+  /* ── CARDS — extra small on phones ── */
+  .card { width:36px; height:52px; font-size:11px; padding:2px 3px; border-radius:5px; border-width:1px; }
+  .card .suit-center { font-size:14px; }
+  .card .rank-top, .card .rank-bot { font-size:10px; line-height:1; }
+  .card.card-sm { width:32px; height:46px; font-size:10px; padding:2px; border-radius:4px; }
+  .card.card-sm .suit-center { font-size:12px; }
+  .card-back { width:36px; height:52px; background-size:7px 7px; border-width:2px; }
+  .card-back::after { font-size:14px; }
+  .card-back.card-sm { width:32px; height:46px; background-size:6px 6px; }
+  .empty-slot { width:36px; height:52px; border-radius:5px; }
+
+  /* ── PLAYERS ──
+     Portrait layout:
+       P1(left) ─── P2(center-top) ─── P3(right)
+                    table
+                     P0 (you, bottom)
+  */
+  .player-spot { gap:3px; }
+  .player-avatar { width:38px; height:38px; font-size:18px; border-width:2px; }
+  .player-spot.active .player-avatar::after { inset:-4px; }
+  .player-info { min-width:66px; padding:2px 6px; border-radius:8px; }
+  .player-name { font-size:8px; letter-spacing:0; }
+  .player-chips { font-size:11px; }
+  .player-status { font-size:8px; }
+  .player-bet-badge { font-size:9px; padding:1px 5px; border-radius:7px; }
+  .dealer-btn { width:16px; height:16px; font-size:6px; top:-5px; right:-5px; }
+  .blind-indicator { width:14px; height:14px; font-size:6px; top:-5px; left:-5px; }
+
+  /* Reposition AI players for portrait */
+  .player-spot.pos-top-left   { top:10px; left:8px; }
+  .player-spot.pos-top-center { top:2px;  left:50%; transform:translateX(-50%); }
+  .player-spot.pos-top-right  { top:10px; right:8px; }
+  .player-spot.pos-bottom     { bottom:-4px; left:50%; transform:translateX(-50%); }
+
+  /* ── ACTION AREA ── */
+  #action-area {
+    width: 100vw;
+    bottom: 0;
+    padding: 6px 8px 10px;
+    padding-bottom: max(10px, calc(6px + env(safe-area-inset-bottom)));
+    background: rgba(0,0,0,0.92);
+    border-top: 1px solid rgba(201,168,76,0.25);
+    border-radius: 0;
+    gap: 7px;
+  }
+  #action-buttons { gap:5px; width:100%; }
+  .btn-action {
+    flex: 1;
+    padding: 11px 4px;
+    font-size: 10px;
+    letter-spacing: 0;
+    border-radius: 8px;
+    min-width: 0;
+    /* Larger touch target */
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #raise-slider-area { width:100%; gap:8px; }
+  #raise-amount { font-size:12px; min-width:70px; padding:5px 8px; }
+  input[type=range] { height:8px; }
+  input[type=range]::-webkit-slider-thumb { width:22px; height:22px; }
+
+  /* ── HAND STRENGTH ── */
+  #hand-strength { bottom:135px; }
+  #hand-name { font-size:11px; letter-spacing:1px; }
+
+  /* ── INFO BAR ── */
+  #info-bar { gap:8px; padding:4px 12px; top:8px; border-radius:20px; }
+  .info-item { font-size:9px; letter-spacing:0; }
+  .info-item span { font-size:10px; }
+
+  /* ── TOAST ── */
+  #toast { font-size:11px; padding:8px 18px; top:14px; max-width:85vw; white-space:normal; text-align:center; }
+
+  /* ── OVERLAY ── */
+  #overlay-content { padding:24px 16px; border-radius:14px; }
+  #overlay-title { font-size:22px; }
+  #overlay-sub { font-size:14px; margin-bottom:16px; }
+  #overlay-hands { gap:6px; }
+  .overlay-player-hand { padding:6px 8px; }
+  .overlay-player-name { font-size:9px; }
+  .overlay-hand-name { font-size:9px; }
+  .btn-next-round { padding:12px 28px; font-size:13px; min-height:48px; }
+
+  /* ── START SCREEN ── */
+  .start-logo { letter-spacing:4px; }
+  .start-sub { font-size:15px; letter-spacing:2px; margin-bottom:28px; }
+  .start-suits { font-size:32px; gap:14px; margin-bottom:28px; }
+  .btn-start { padding:14px 40px; font-size:15px; letter-spacing:2px; min-height:52px; }
+
+  /* ── THINKING ── */
+  #thinking-area { font-size:10px; padding:6px 14px; }
+}
+
+/* ─── Very small phones (iPhone SE etc) ─── */
+@media (max-width: 360px) {
+  #table-wrap { height:58vh; }
+  .card { width:32px; height:46px; font-size:9px; }
+  .card .suit-center { font-size:12px; }
+  .card-back { width:32px; height:46px; }
+  .empty-slot { width:32px; height:46px; }
+  .player-avatar { width:34px; height:34px; font-size:16px; }
+  .player-info { min-width:56px; }
+  .btn-action { font-size:9px; padding:10px 2px; }
+}
+
+/* ─── Landscape phone ─── */
+@media (max-height: 500px) and (orientation: landscape) {
+  #table-wrap { width:min(680px,90vw); height:85vh; margin-top:0; }
+  #info-bar { top:4px; padding:3px 12px; gap:10px; }
+  .info-item { font-size:9px; }
+  #action-area { bottom:4px; }
+  .btn-action { padding:7px 10px; font-size:10px; min-height:36px; }
+  .player-spot.pos-bottom { bottom:0px; }
+  #hand-strength { bottom:110px; }
+  .card { width:40px; height:58px; font-size:12px; }
+  .card-back { width:40px; height:58px; }
+  .empty-slot { width:40px; height:58px; }
+}
 </style>
 </head>
 <body>
@@ -740,6 +926,20 @@ function startGame(){
   ss.classList.add('fade-out');
   setTimeout(()=>{ss.style.display='none';initGame();},800);
 }
+
+// ── MOBILE POLISH ──
+// Prevent iOS overscroll bounce during slider drag
+document.getElementById('raise-slider').addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+document.getElementById('raise-slider').addEventListener('touchmove',e=>e.stopPropagation(),{passive:true});
+
+// Larger touch area: fire button onclick on touchend to avoid 300ms iOS delay
+document.querySelectorAll('.btn-action,.btn-start,.btn-next-round').forEach(btn=>{
+  btn.addEventListener('touchend',function(e){
+    e.preventDefault();
+    this.click();
+  },{passive:false});
+});
+
 </script>
 </body>
 </html>
